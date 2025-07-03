@@ -3,7 +3,7 @@
 @section('content')
     <div class="container mt-5">
         <h2>Tambah Desain</h2>
-        <form action="{{ route('admin.upload.desain') }}" method="POST" enctype="multipart/form-data">
+        <form id="formTambahDesain" action="{{ route('admin.upload.desain') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
                 <label for="gambar" class="form-label">Gambar Rumah (Thumbnail)</label>
@@ -64,4 +64,40 @@
             <button type="submit" class="btn btn-primary">Simpan Desain</button>
         </form>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('formTambahDesain');
+
+            form.addEventListener('submit', function(e) {
+                e.preventDefault(); // stop dulu pengiriman
+
+                Swal.fire({
+                    title: 'Simpan Desain?',
+                    text: "Pastikan semua data sudah benar.",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, simpan',
+                    cancelButtonText: 'Batal',
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#aaa'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Menyimpan...',
+                            text: 'Mohon tunggu sebentar',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        setTimeout(() => {
+                            form.submit();
+                        }, 800); // biar loading sempat muncul
+                    }
+                });
+            });
+        });
+    </script>
 @endsection

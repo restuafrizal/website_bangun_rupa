@@ -119,7 +119,7 @@ class AdminController extends Controller
             'updated_at' => now(),
         ]);
 
-        return redirect()->route('admin.dashboard')->with('success', 'Desain berhasil ditambahkan.');
+        return redirect()->route('admin.list.desain')->with('success', 'Desain berhasil ditambahkan.');
     }
 
     public function delete_desain($id)

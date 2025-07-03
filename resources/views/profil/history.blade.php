@@ -69,7 +69,10 @@
     <h2 class="mb-4 fw-bold">Produk Sudah Lunas</h2>
 
     @forelse ($sudahLunas as $history)
-        @php $desain = $history->desain; @endphp
+        @php
+            $desain = $history->desain;
+            $rated = !is_null($desain->already_rated);
+        @endphp
         <div class="card mb-3">
             <div class="row g-0 align-items-center">
                 <div class="col-auto">
@@ -92,11 +95,17 @@
                         </div>
                         <a href="{{ route('koleksi.detail', ['id' => $desain->id]) }}"
                             class="btn btn-outline-info btn-sm mt-2">Lihat</a>
-                        <a class="btn btn-outline-success btn-sm ms-2 mt-2" data-bs-toggle="modal"
-                            data-bs-target="#ratingModal" data-desain-id="{{ $desain->id }}"
-                            data-nama-produk="{{ $desain->nama_produk }}">
-                            Beri Rating
-                        </a>
+
+                        @if ($desain->already_rated)
+                            <button class="btn btn-success btn-sm ms-2 mt-2" disabled>Sudah Dirating</button>
+                        @else
+                            <a class="btn btn-outline-success btn-sm ms-2 mt-2" data-bs-toggle="modal"
+                                data-bs-target="#ratingModal" data-desain-id="{{ $desain->id }}"
+                                data-nama-produk="{{ $desain->nama_produk }}">
+                                Beri Rating
+                            </a>
+                        @endif
+
                         <div class="d-flex justify-content-end">
                             <a href="javascript:void(0);" onclick="delete_history({{ $history->id }})"
                                 class="d-flex flex-column align-items-center text-decoration-none text-danger">
@@ -137,7 +146,8 @@
                     </div>
                     <div class="mb-3">
                         <label for="comment" class="form-label">Komentar</label>
-                        <textarea class="form-control" name="komentar" id="comment" rows="3" required></textarea>
+                        <textarea placeholder="Berikan komentar anda disini" class="form-control" name="komentar" id="comment"
+                            rows="3"></textarea>
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -159,33 +169,6 @@
                 const desainId = this.getAttribute('data-desain-id');
                 desainIdInput.value = desainId;
             });
-        });
-
-        // Handle form submit
-        document.getElementById('ratingForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const data = {
-                desain_id: desainIdInput.value,
-                rating: document.getElementById('rating').value,
-                komentar: document.getElementById('comment').value,
-                _token: '{{ csrf_token() }}'
-            };
-
-            fetch("{{ route('rating.store') }}", {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify(data)
-                }).then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        alert('Rating berhasil dikirim!');
-                        location.reload();
-                    }
-                });
         });
 
         // Star rating

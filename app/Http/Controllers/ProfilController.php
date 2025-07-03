@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\PurchaseHistory;
 use App\Models\Rating;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 
 class ProfilController extends Controller
@@ -62,15 +63,19 @@ class ProfilController extends Controller
         return back()->with('success', 'Profil berhasil diperbarui.');
     }
 
-    public function history()
-    {
-    $title = 'Riwayat Pembelian'; // Ubah title agar sesuai konteks
-    $userId = Auth::user()->id; // Gunakan Auth::user()->id agar lebih jelas
+   public function history()
+   {
+    $title = 'History';
 
-    $histories = PurchaseHistory::with('desain')
-        ->where('user_id', $userId)
-        ->latest()
-        ->get();
+    $userId = Auth::id();
+
+    $histories = PurchaseHistory::with('desain')->where('user_id', $userId)->latest()->get();
+
+    foreach ($histories as $history) {
+        $history->desain->already_rated = Rating::where('user_id', $userId)
+            ->where('desain_id', $history->desain->id)
+            ->exists();
+    }
 
     return view('profil.history', compact('histories', 'title'));
     }
@@ -81,7 +86,7 @@ class ProfilController extends Controller
     $request->validate([
         'desain_id' => 'required|exists:desains,id',
         'rating' => 'required|integer|min:1|max:5',
-        'komentar' => 'required|string|max:1000',
+        'komentar' => 'nullable|string|max:1000',
     ]);
 
     Rating::create([
@@ -91,23 +96,8 @@ class ProfilController extends Controller
         'komentar' => $request->komentar,
     ]);
 
-    return response()->json(['success' => true]);
+    return redirect()->back()->with('success', 'Rating berhasil dikirim!');
     }
-
-    public function delete_history($id)
-    {
-    $history = PurchaseHistory::findOrFail($id);
-
-    // Pastikan user yang login hanya bisa menghapus miliknya
-    if ($history->user_id !== Auth::id()) {
-        return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
-    }
-
-    $history->delete();
-
-    return response()->json(['success' => true, 'message' => 'Riwayat berhasil dihapus']);
-    }
-
 
 
 }

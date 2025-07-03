@@ -69,7 +69,11 @@
                             <td>{{ \Carbon\Carbon::parse($t->created_at)->translatedFormat('d F Y') }}</td>
                             <td class="text-center">
                                 <a href="#" class="text-success me-2 btn-edit" data-id="{{ $t->id }}"
-                                    data-status="{{ $t->status }}" data-bs-toggle="modal" data-bs-target="#editModal">
+                                    data-status="{{ $t->status }}"
+                                    data-nama="{{ $t->user->name ?? 'Tidak diketahui' }}"
+                                    data-produk="{{ $t->desain->nama_produk ?? 'Tidak diketahui' }}"
+                                    data-harga="Rp {{ number_format($t->desain->harga ?? 0, 0, ',', '.') }}"
+                                    data-bs-toggle="modal" data-bs-target="#editModal">
                                     <i class="fa fa-edit"></i>
                                 </a>
                             </td>
@@ -128,48 +132,10 @@
     </div>
 
 
-
     <script>
         new DataTable('#tableTransaksi');
 
         document.addEventListener('DOMContentLoaded', function() {
-            // SweetAlert untuk hapus
-            document.querySelectorAll('.btn-delete').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    const id = this.getAttribute('data-id');
-
-                    Swal.fire({
-                        title: 'Yakin ingin menghapus?',
-                        text: "Transaksi akan dihapus permanen!",
-                        icon: 'warning',
-                        showCancelButton: true,
-                        confirmButtonColor: '#d33',
-                        cancelButtonColor: '#6c757d',
-                        confirmButtonText: 'Ya, hapus!',
-                        cancelButtonText: 'Batal'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            fetch(`/admin/transaksi/${id}`, {
-                                    method: 'DELETE',
-                                    headers: {
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                                        'Accept': 'application/json'
-                                    }
-                                }).then(res => res.json())
-                                .then(data => {
-                                    if (data.success) {
-                                        Swal.fire('Berhasil!', data.message, 'success')
-                                            .then(() => location.reload());
-                                    } else {
-                                        Swal.fire('Gagal', 'Gagal menghapus transaksi',
-                                            'error');
-                                    }
-                                });
-                        }
-                    });
-                });
-            });
-
             // Set data untuk modal edit
             document.querySelectorAll('.btn-edit').forEach(btn => {
                 btn.addEventListener('click', function() {
@@ -186,6 +152,39 @@
                     document.getElementById('edit_harga').textContent = harga;
                     document.getElementById('formEditStatus').setAttribute('action',
                         `/admin/transaksi/${id}`);
+                });
+            });
+
+            // SweetAlert sebelum submit form
+            const formEdit = document.getElementById('formEditStatus');
+            formEdit.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Yakin ingin menyimpan?',
+                    text: "Status transaksi akan diperbarui.",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#aaa',
+                    confirmButtonText: 'Ya, simpan',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: 'Menyimpan...',
+                            text: 'Mohon tunggu sebentar',
+                            allowOutsideClick: false,
+                            didOpen: () => {
+                                Swal.showLoading();
+                            }
+                        });
+
+                        // submit form setelah delay biar loading tampil
+                        setTimeout(() => {
+                            formEdit.submit();
+                        }, 600);
+                    }
                 });
             });
         });
