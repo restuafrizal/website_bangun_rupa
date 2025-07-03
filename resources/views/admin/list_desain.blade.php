@@ -190,7 +190,9 @@
     @endforeach
 
     <script>
-        new DataTable('#tableDesains');
+        @if ($desains->count())
+            new DataTable('#tableDesains');
+        @endif
 
         document.querySelectorAll('.btn-delete').forEach(button => {
             button.addEventListener('click', function() {
