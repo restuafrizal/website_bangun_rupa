@@ -7,18 +7,32 @@ use App\Models\Desains;
 
 class HomeController extends Controller
 {
-    public function index(){
-        $title = 'Beranda';
+    public function index(Request $request)
+    {
 
-        $desainsTerbaru = Desains::latest()->take(4)->get(); // Ambil 4 desain terbaru
-        $desainsRatingTerbaik = Desains::withAvg('ratings', 'rating')
-            ->having('ratings_avg_rating', '>', 0)
-            ->orderByDesc('ratings_avg_rating')
-            ->take(4)
-            ->get();
+    $title = 'Beranda';
+    $query = $request->q;
 
-        return view('home/index', compact('title', 'desainsTerbaru', 'desainsRatingTerbaik'));
+    $desainsTerbaru = Desains::latest()
+        ->when($query, function ($q) use ($query) {
+            $q->where('nama_produk', 'like', "%$query%")
+              ->orWhere('nama_desainer', 'like', "%$query%");
+        })
+        ->take(8)
+        ->get();
+
+    $desainsRatingTerbaik = Desains::withAvg('ratings', 'rating')
+        ->when($query, function ($q) use ($query) {
+            $q->where('nama_produk', 'like', "%$query%")
+              ->orWhere('nama_desainer', 'like', "%$query%");
+        })
+        ->orderByDesc('ratings_avg_rating')
+        ->take(8)
+        ->get();
+
+    return view('home/index', compact('title','desainsTerbaru', 'desainsRatingTerbaik'));
     }
+
 
     public function kebijakan_privasi(){
         $title = 'Kebijakan Privasi';

@@ -1,5 +1,36 @@
 @include('auth.auth_header')
 
+<style>
+    @media (max-width: 768px) {
+        .left-img {
+            display: none;
+            /* sembunyikan gambar di layar kecil */
+        }
+
+        .gradient-bg {
+            width: 100%;
+            padding: 2rem 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-wrapper {
+            width: 100%;
+            max-width: 100%;
+            padding: 1.5rem;
+        }
+
+        .form-wrapper h1 {
+            font-size: 1.75rem;
+        }
+
+        .btn-custom {
+            font-size: 1rem;
+        }
+    }
+</style>
+
 <div class="container-fluid">
     <div class="row h-100">
         <!-- logo dan gambar -->

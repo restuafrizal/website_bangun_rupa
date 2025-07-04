@@ -8,8 +8,9 @@
             <div class="col-md-6 d-flex flex-column justify-content-center">
                 <h1 class="fw-bold text-primary mb-3">Bangun Impianmu<br>Dimulai dari Sini</h1>
                 <p class="text-dark mb-4">Wujudkan hunian nyaman bersama BangunRupa</p>
-                <form class="search-bar d-flex" role="search">
-                    <input type="text" class="form-control" placeholder="Cari desain" />
+                <form class="search-bar d-flex" role="search" method="GET" action="{{ route('home') }}">
+                    <input type="text" class="form-control" placeholder="Cari desain" name="q"
+                        value="{{ request('q') }}">
                     <button class="btn px-4 text-white" type="submit">
                         <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
@@ -25,6 +26,10 @@
     <div class="container">
         <section class="py-5">
             <h1 class="fw-bold" style="font-size: 48px;">Desain Terbaru</h1>
+            @if ($desainsTerbaru->isEmpty() && request('q'))
+                <p class="text-muted mt-3">Tidak ditemukan hasil untuk pencarian "<strong>{{ request('q') }}</strong>".
+                </p>
+            @endif
             <div class="row row-cols-1 row-cols-md-4 g-4 mt-3">
                 @foreach ($desainsTerbaru as $desain)
                     <div class="col">
@@ -53,7 +58,6 @@
                                         class="btn-custom btn btn-sm mt-auto w-100">
                                         <i class="fa fa-book-open me-1"></i> Lihat Detail
                                     </a>
-
                                 </div>
                             </div>
                         </div>
@@ -65,6 +69,10 @@
         <section class="py-5">
             <div class="container">
                 <h1 class="fw-bold mb-4" style="font-size: 48px;">Desain Terbaik</h1>
+                @if ($desainsTerbaru->isEmpty() && request('q'))
+                    <p class="text-muted mt-3">Tidak ditemukan hasil untuk pencarian
+                        "<strong>{{ request('q') }}</strong>".</p>
+                @endif
                 <div class="row row-cols-1 row-cols-md-4 g-4">
                     @forelse ($desainsRatingTerbaik as $desain)
                         <div class="col">
