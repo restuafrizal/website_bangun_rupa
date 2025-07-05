@@ -18,7 +18,7 @@ class HomeController extends Controller
             $q->where('nama_produk', 'like', "%$query%")
               ->orWhere('nama_desainer', 'like', "%$query%");
         })
-        ->take(8)
+        ->take(4)
         ->get();
 
     $desainsRatingTerbaik = Desains::withAvg('ratings', 'rating')
@@ -26,8 +26,9 @@ class HomeController extends Controller
             $q->where('nama_produk', 'like', "%$query%")
               ->orWhere('nama_desainer', 'like', "%$query%");
         })
+        ->has('ratings')
         ->orderByDesc('ratings_avg_rating')
-        ->take(8)
+        ->take(4)
         ->get();
 
     return view('home/index', compact('title','desainsTerbaru', 'desainsRatingTerbaik'));

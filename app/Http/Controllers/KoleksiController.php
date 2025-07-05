@@ -54,7 +54,7 @@ class KoleksiController extends Controller
     // Redirect ke WhatsApp
     $desain = Desains::findOrFail($id);
     $pesan = 'Halo Admin, saya tertarik dengan desain "' . $desain->nama_produk . '". Apakah masih tersedia?';
-    $url = 'https://wa.me/6281234567890?text=' . urlencode($pesan);
+    $url = 'https://wa.me/6287889912710?text=' . urlencode($pesan);
 
     return redirect()->away($url);
     }

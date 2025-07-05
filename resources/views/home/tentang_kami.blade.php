@@ -180,7 +180,7 @@
                     </div>
                     <h5 class="fw-bold mb-2">WhatsApp</h5>
                     <p><a href="https://wa.me/6287889912710" class="text-decoration-none text-dark">+62
-                            812-3456-7890</a></p>
+                            878-8991-2710</a></p>
                 </div>
             </div>
 

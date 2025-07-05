@@ -24,50 +24,101 @@
 <!-- Konten Tambahan Scroll -->
 <section class="py-5">
     <div class="container">
-        <section class="py-5">
-            <h1 class="fw-bold" style="font-size: 48px;">Desain Terbaru</h1>
-            @if ($desainsTerbaru->isEmpty() && request('q'))
-                <p class="text-muted mt-3">Tidak ditemukan hasil untuk pencarian "<strong>{{ request('q') }}</strong>".
-                </p>
-            @endif
-            <div class="row row-cols-1 row-cols-md-4 g-4 mt-3">
-                @foreach ($desainsTerbaru as $desain)
-                    <div class="col">
-                        <div class="card shadow-sm h-100 d-flex flex-column">
-                            <img src="{{ asset('img/desain/' . $desain->gambar) }}" class="card-img-top"
-                                alt="{{ $desain->nama_produk }}" style="height: 200px; object-fit: cover;" />
-                            <div class="card-body d-flex flex-column justify-content-between flex-grow-1">
-                                <h5 class="card-title fw-semibold mb-1">{{ $desain->nama_produk }}</h5>
-                                <p class="text-muted mb-3">{{ $desain->nama_desainer ?? 'Tidak Diketahui' }}</p>
-                                <div class="d-flex align-items-start mb-2">
-                                    <i class="bi bi-currency-dollar me-2 text-primary"></i>
-                                    <div>
-                                        <small class="text-muted">Biaya Pembangunan</small><br />
-                                        <strong>Rp{{ number_format($desain->harga, 0, ',', '.') }}</strong>
+
+        @if (request('q'))
+            <!-- Jika sedang melakukan pencarian -->
+            <section class="py-5">
+                <div class="container">
+                    <h1 class="fw-bold mb-4" style="font-size: 48px;">Desain yang Anda cari</h1>
+
+                    @if ($desainsTerbaru->isEmpty())
+                        <p class="text-muted">Tidak ditemukan hasil untuk pencarian
+                            "<strong>{{ request('q') }}</strong>".</p>
+                    @endif
+
+                    <div class="row row-cols-1 row-cols-md-4 g-4 mt-3">
+                        @foreach ($desainsTerbaru as $desain)
+                            <div class="col">
+                                <div class="card shadow-sm h-100 d-flex flex-column">
+                                    <img src="{{ asset('img/desain/' . $desain->gambar) }}" class="card-img-top"
+                                        alt="{{ $desain->nama_produk }}" style="height: 200px; object-fit: cover;" />
+                                    <div class="card-body d-flex flex-column justify-content-between flex-grow-1">
+                                        <h5 class="card-title fw-semibold mb-1">{{ $desain->nama_produk }}</h5>
+                                        <p class="text-muted mb-3">{{ $desain->nama_desainer ?? 'Tidak Diketahui' }}</p>
+                                        <div class="d-flex align-items-start mb-2">
+                                            <i class="bi bi-currency-dollar me-2 text-primary"></i>
+                                            <div>
+                                                <small class="text-muted">Biaya Pembangunan</small><br />
+                                                <strong>Rp{{ number_format($desain->harga, 0, ',', '.') }}</strong>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex align-items-start">
+                                            <i class="bi bi-arrows-fullscreen me-2 text-primary"></i>
+                                            <div>
+                                                <small class="text-muted">Minimal Lahan</small><br />
+                                                <strong>{{ str_replace('x', ' m x ', $desain->ukuran_lahan) }}
+                                                    m</strong>
+                                            </div>
+                                        </div>
+                                        <div class="mt-4 text-center">
+                                            <a href="{{ route('koleksi.detail', $desain->id) }}"
+                                                class="btn-custom btn btn-sm mt-auto w-100">
+                                                <i class="fa fa-book-open me-1"></i> Lihat Detail
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="d-flex align-items-start">
-                                    <i class="bi bi-arrows-fullscreen me-2 text-primary"></i>
-                                    <div>
-                                        <small class="text-muted">Minimal Lahan</small><br />
-                                        <strong>{{ str_replace('x', ' m x ', $desain->ukuran_lahan) }} m</strong>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+            </section>
+        @else
+            <section class="py-5">
+                <h1 class="fw-bold" style="font-size: 48px;">Desain Terbaru</h1>
+                @if ($desainsTerbaru->isEmpty() && request('q'))
+                    <p class="text-muted mt-3">Tidak ditemukan hasil untuk pencarian
+                        "<strong>{{ request('q') }}</strong>".
+                    </p>
+                @endif
+                <div class="row row-cols-1 row-cols-md-4 g-4 mt-3">
+                    @foreach ($desainsTerbaru as $desain)
+                        <div class="col">
+                            <div class="card shadow-sm h-100 d-flex flex-column">
+                                <img src="{{ asset('img/desain/' . $desain->gambar) }}" class="card-img-top"
+                                    alt="{{ $desain->nama_produk }}" style="height: 200px; object-fit: cover;" />
+                                <div class="card-body d-flex flex-column justify-content-between flex-grow-1">
+                                    <h5 class="card-title fw-semibold mb-1">{{ $desain->nama_produk }}</h5>
+                                    <p class="text-muted mb-3">{{ $desain->nama_desainer ?? 'Tidak Diketahui' }}</p>
+                                    <div class="d-flex align-items-start mb-2">
+                                        <i class="bi bi-currency-dollar me-2 text-primary"></i>
+                                        <div>
+                                            <small class="text-muted">Biaya Pembangunan</small><br />
+                                            <strong>Rp{{ number_format($desain->harga, 0, ',', '.') }}</strong>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="mt-4 text-center">
-                                    <a href="{{ route('koleksi.detail', $desain->id) }}"
-                                        class="btn-custom btn btn-sm mt-auto w-100">
-                                        <i class="fa fa-book-open me-1"></i> Lihat Detail
-                                    </a>
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-arrows-fullscreen me-2 text-primary"></i>
+                                        <div>
+                                            <small class="text-muted">Minimal Lahan</small><br />
+                                            <strong>{{ str_replace('x', ' m x ', $desain->ukuran_lahan) }} m</strong>
+                                        </div>
+                                    </div>
+                                    <div class="mt-4 text-center">
+                                        <a href="{{ route('koleksi.detail', $desain->id) }}"
+                                            class="btn-custom btn btn-sm mt-auto w-100">
+                                            <i class="fa fa-book-open me-1"></i> Lihat Detail
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                @endforeach
-            </div>
-        </section>
+                    @endforeach
+                </div>
+            </section>
 
-        <section class="py-5">
-            <div class="container">
+            <section class="py-5">
+
                 <h1 class="fw-bold mb-4" style="font-size: 48px;">Desain Terbaik</h1>
                 @if ($desainsTerbaru->isEmpty() && request('q'))
                     <p class="text-muted mt-3">Tidak ditemukan hasil untuk pencarian
@@ -81,7 +132,8 @@
                                     alt="{{ $desain->nama_produk }}" style="height: 200px; object-fit: cover;" />
                                 <div class="card-body d-flex flex-column justify-content-between flex-grow-1">
                                     <h5 class="card-title fw-semibold mb-1">{{ $desain->nama_produk }}</h5>
-                                    <p class="text-muted mb-2">{{ $desain->nama_desainer ?? 'Tidak Diketahui' }}</p>
+                                    <p class="text-muted mb-2">{{ $desain->nama_desainer ?? 'Tidak Diketahui' }}
+                                    </p>
 
                                     <div class="d-flex align-items-center text-warning mb-2">
                                         @php
@@ -105,7 +157,8 @@
                                         <i class="bi bi-arrows-fullscreen me-2 text-primary"></i>
                                         <div>
                                             <small class="text-muted">Minimal Lahan</small><br />
-                                            <strong>{{ str_replace('x', ' m x ', $desain->ukuran_lahan) }} m</strong>
+                                            <strong>{{ str_replace('x', ' m x ', $desain->ukuran_lahan) }}
+                                                m</strong>
                                         </div>
                                     </div>
                                     <div class="mt-4 text-center">
@@ -124,8 +177,8 @@
                         </div>
                     @endforelse
                 </div>
-            </div>
-        </section>
+            </section>
+        @endif
 
         <section class="py-5">
             <div class="container text-center">
@@ -181,8 +234,10 @@
                                     <h5 class="mb-0 fw-bold">Frenkie de Jong</h5>
                                 </div>
                                 <p class="text-secondary">
-                                    “Saya merasa terbantu sekali dengan layanan ini. Tidak hanya desainnya menarik, tapi
-                                    juga diberikan penjelasan teknis yang memudahkan saya dan keluarga memahami rencana
+                                    “Saya merasa terbantu sekali dengan layanan ini. Tidak hanya desainnya menarik,
+                                    tapi
+                                    juga diberikan penjelasan teknis yang memudahkan saya dan keluarga memahami
+                                    rencana
                                     pembangunan rumah. Sukses terus!”
                                 </p>
                             </div>
